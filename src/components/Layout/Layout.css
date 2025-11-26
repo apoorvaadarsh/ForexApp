@@ -1,0 +1,357 @@
+/* Layout Variables */
+:root {
+    --sidebar-width: 16.25rem;
+    /* 260px */
+    --sidebar-collapsed-width: 4.5rem;
+    /* 72px */
+    --header-height: 3.75rem;
+    /* 60px */
+}
+
+/* Main Layout Structure */
+.main-layout {
+    display: flex;
+    height: 100vh;
+    /* Fixed height */
+    width: 100%;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    overflow: hidden;
+    /* Prevent body scroll */
+}
+
+.main-content {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+    /* Scrollable content */
+    margin-left: var(--sidebar-width);
+    transition: margin-left 0.3s ease;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+.main-layout.collapsed .main-content {
+    margin-left: var(--sidebar-collapsed-width);
+}
+
+/* Sidebar Styling */
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background-color: var(--surface-color);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    transition: width 0.3s ease, transform 0.3s ease;
+    z-index: 20;
+    box-shadow: var(--shadow-1);
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+.sidebar.collapsed {
+    width: var(--sidebar-collapsed-width);
+    padding: 1.5rem 0.75rem;
+}
+
+.sidebar-header {
+    margin-bottom: 2rem;
+    min-height: 2.5rem;
+    /* 40px */
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.sidebar.collapsed .header-content {
+    justify-content: center;
+}
+
+.sidebar-header h1 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin: 0;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+}
+
+.sidebar-toggle {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.sidebar-toggle:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+    color: var(--text-primary);
+}
+
+.dark .sidebar-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+    width: 4px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.25rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.sidebar.collapsed .nav-item {
+    justify-content: center;
+    padding: 0.75rem;
+}
+
+.nav-item:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+    color: var(--text-primary);
+}
+
+.dark .nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.nav-item.active {
+    background-color: rgba(98, 0, 238, 0.12);
+    color: var(--primary-color);
+}
+
+.dark .nav-item.active {
+    background-color: rgba(187, 134, 252, 0.12);
+    color: var(--primary-color);
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: none;
+    border: none;
+    border-radius: 0.25rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.sidebar.collapsed .theme-toggle {
+    justify-content: center;
+    padding: 0.75rem;
+}
+
+.theme-toggle:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+    color: var(--text-primary);
+}
+
+.dark .theme-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Placeholder Container */
+.placeholder-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.placeholder-container h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    font-weight: 300;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+
+    /* On mobile, sidebar behaves differently */
+    .sidebar {
+        width: var(--sidebar-width);
+        transform: translateX(-100%);
+        /* Hidden by default */
+    }
+
+    .sidebar.collapsed {
+        /* Reusing 'collapsed' state to mean 'open' on mobile for simplicity in this specific toggle logic, 
+       OR we need to change how we think about it. 
+       If isSidebarCollapsed is true, we want it hidden? No, usually false means open.
+       
+       Let's adjust: 
+       Desktop: false = open (width 260), true = collapsed (width 72)
+       Mobile: false = hidden (transform -100%), true = open (transform 0)? 
+       That's confusing.
+       
+       Better: 
+       Desktop: Default Open. Toggle -> Collapsed.
+       Mobile: Default Hidden. Toggle -> Open.
+       
+       We might need to check screen size in JS or just use CSS.
+       If we use the SAME state 'isSidebarCollapsed':
+       
+       Let's assume 'isSidebarCollapsed' means "Mini Mode" on Desktop.
+       On Mobile, we probably want a full drawer.
+       
+       Let's stick to a simpler mobile pattern:
+       Sidebar is always fixed.
+       If 'collapsed' class is present:
+         Desktop: Width 72px.
+         Mobile: Transform -100% (Hidden).
+       If 'collapsed' class is NOT present:
+         Desktop: Width 260px.
+         Mobile: Transform 0 (Visible, Overlay).
+       
+       This means default state (false) = Open on Desktop, Open on Mobile.
+       But on Mobile we want default to be Closed.
+       So we might need to initialize state based on screen width, or just handle CSS.
+       
+       Let's try:
+       .sidebar { transform: translateX(-100%); }
+       .sidebar.mobile-open { transform: translateX(0); }
+       
+       But we are using 'collapsed' class from MainLayout.
+       
+       Let's refine the CSS to work with the existing single boolean state, 
+       assuming the user might toggle it.
+       
+       If we want "Sidebar Toggle" to work on mobile, we need a button visible on mobile when sidebar is closed.
+       The current sidebar toggle is INSIDE the sidebar. If sidebar is hidden, button is hidden.
+       We need a mobile toggle button in the main content or header.
+       
+       However, the user requirements didn't explicitly ask for a new mobile header, just "Sidebar Toggle".
+       And "Sidebar Collapse Effect... main content area MUST automatically expand".
+       
+       Let's assume the user wants the sidebar to behave like a drawer on mobile.
+       And on desktop it collapses to icons.
+       
+       For the purpose of this task, I will ensure:
+       Desktop: Collapsed (icon only) vs Expanded.
+       Mobile: The sidebar will take full width or large width when open, and be hidden when closed.
+       
+       I will add a mobile-only menu button in the main content if needed, 
+       OR I will make the sidebar "Collapsed" state on mobile be "Hidden" and "Expanded" be "Overlay".
+       But then how do you open it? You need a button.
+       
+       The user said: "Introduce a clear... icon... in the top-left corner of the header or near the sidebar".
+       If it's IN the sidebar, and sidebar is hidden, we can't click it.
+       
+       I will add a mobile toggle button to the MainLayout that is only visible on mobile.
+    */
+
+        .main-content {
+            margin-left: 0 !important;
+            padding: 1rem;
+            width: 100%;
+        }
+
+        .sidebar {
+            transform: translateX(-100%);
+            width: 80%;
+            /* Drawer style */
+            max-width: 300px;
+            box-shadow: var(--shadow-4);
+        }
+
+        .sidebar.mobile-open {
+            transform: translateX(0);
+        }
+
+        /* We need a way to show sidebar on mobile. 
+       I will add a mobile toggle to MainLayout.jsx in the next step.
+       For now, I'll define the class .mobile-menu-btn
+    */
+    }
+}
+
+.mobile-menu-btn {
+    display: none;
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 30;
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.5rem;
+    box-shadow: var(--shadow-1);
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* When sidebar is open on mobile, we might want a backdrop */
+    .sidebar-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 15;
+        display: none;
+    }
+
+    .sidebar-backdrop.visible {
+        display: block;
+    }
+}
