@@ -34,10 +34,8 @@ const JournalPage = () => {
     };
 
     const handleDeleteEntry = (id) => {
-        if (window.confirm('Are you sure you want to delete this entry?')) {
-            setEntries(entries.filter(entry => entry.id !== id));
-            setSelectedEntry(null);
-        }
+        setEntries(entries.filter(entry => entry.id !== id));
+        setSelectedEntry(null);
     };
 
     const handleEditEntry = (entry) => {
