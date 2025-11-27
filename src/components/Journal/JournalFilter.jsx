@@ -54,6 +54,16 @@ const JournalFilter = ({ filters, onFilterChange }) => {
             </div>
 
             <div className="filter-group">
+                <label>Status</label>
+                <select name="status" value={filters.status || ''} onChange={handleChange}>
+                    <option value="">All Status</option>
+                    <option value="Taken">Taken</option>
+                    <option value="Planned">Planned</option>
+                    <option value="Discarded">Discarded</option>
+                </select>
+            </div>
+
+            <div className="filter-group">
                 <label>Tags</label>
                 <input
                     type="text"
