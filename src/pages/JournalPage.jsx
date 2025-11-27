@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Plus, Filter } from 'lucide-react';
+import { isWithinInterval, startOfDay, endOfDay } from 'date-fns';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import JournalEntryForm from '../components/Journal/JournalEntryForm';
 import JournalList from '../components/Journal/JournalList';
@@ -22,6 +23,7 @@ const JournalPage = () => {
         tag: '',
         session: '',
         status: 'All',
+        dateRange: { start: null, end: null },
     });
 
     const location = useLocation();
@@ -43,10 +45,10 @@ const JournalPage = () => {
 
     const handleAddEntry = (newEntry) => {
         // 1. Add the new entry to the front of the list
-        setEntries([newEntry, ...entries]); 
+        setEntries([newEntry, ...entries]);
         setIsFromChecklist(false);
         // 2. Close the form
-        setShowForm(false); 
+        setShowForm(false);
         setEditingEntry(null);
     };
 
@@ -86,6 +88,17 @@ const JournalPage = () => {
 
     const filteredEntries = useMemo(() => {
         let result = [...entries];
+
+        // 1. Filter by Date Range
+        if (filters.dateRange?.start && filters.dateRange?.end) {
+            const start = startOfDay(filters.dateRange.start);
+            const end = endOfDay(filters.dateRange.end);
+
+            result = result.filter(entry => {
+                const entryDate = new Date(entry.date);
+                return isWithinInterval(entryDate, { start, end });
+            });
+        }
 
         // --- FIX START ---
         // Only filter if a status is selected AND it is NOT 'All'
@@ -153,7 +166,7 @@ const JournalPage = () => {
                             onUpdateEntry={handleUpdateEntry}
                             initialData={editingEntry} // Correctly null for new entry
                             onCancel={handleCancelForm}
-                            fromChecklist={isFromChecklist}   
+                            fromChecklist={isFromChecklist}
                         />
                     </div>
                 </div>
