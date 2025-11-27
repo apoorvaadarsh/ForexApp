@@ -13,10 +13,10 @@ const CheckList = () => {
     const [toggles, setToggles] = useState({});
     const [editingPlanId, setEditingPlanId] = useState(null);
 
-    // Filter for Planned Trades
-    const plannedTrades = useMemo(() => {
-        return entries.filter(entry => entry.tradeStatus === 'Planned');
-    }, [entries]);
+    // // Filter for Planned Trades
+    // const plannedTrades = useMemo(() => {
+    //     return entries.filter(entry => entry.tradeStatus === 'Planned');
+    // }, [entries]);
 
     // Calculate scores
     const scores = useMemo(() => {
@@ -235,7 +235,7 @@ const CheckList = () => {
                     </div>
 
                     {/* Planned Trades List */}
-                    <div className="planned-trades-section">
+                    {/* <div className="planned-trades-section">
                         <h3 className="planned-trades-header">Planned Trades</h3>
                         {plannedTrades.length > 0 ? (
                             <div className="planned-list">
@@ -282,7 +282,7 @@ const CheckList = () => {
                                 No planned trades yet.
                             </div>
                         )}
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>

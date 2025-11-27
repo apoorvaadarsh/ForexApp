@@ -10,10 +10,8 @@ const JournalDetail = ({ entry, onClose, onDelete, onEdit }) => {
     const pnl = calculatePnL(entry.type, entry.entryPrice, entry.exitPrice);
 
     const handleDelete = () => {
-        if (window.confirm('Are you sure you want to delete this journal entry?')) {
             onDelete(entry.id);
             onClose();
-        }
     };
 
     return (

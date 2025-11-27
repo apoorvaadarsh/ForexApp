@@ -47,6 +47,7 @@ const JournalPage = () => {
         setIsFromChecklist(false);
         // 2. Close the form
         setShowForm(false); 
+        setEditingEntry(null);
     };
 
     const handleUpdateEntry = (updatedEntry) => {
@@ -61,6 +62,7 @@ const JournalPage = () => {
     const handleEditEntry = (entry) => {
         setEditingEntry(entry);
         setShowForm(true);
+        setSelectedEntry(null);
     };
 
     const handleDeleteEntry = (entryId) => {
