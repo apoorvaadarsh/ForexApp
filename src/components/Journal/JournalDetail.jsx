@@ -82,6 +82,53 @@ const JournalDetail = ({ entry, onClose, onDelete, onEdit }) => {
                     </div>
                 )}
 
+                {/* Confluence Details Section */}
+                {entry.confluenceScore !== undefined && entry.confluenceScore !== 'NA' && (
+                    <div className="detail-confluence">
+                        <div className="confluence-header">
+                            <h3>Confluence Details</h3>
+                            <span
+                                className="confluence-badge large"
+                                style={{
+                                    color: entry.confluenceColor || 'var(--primary-color)',
+                                    backgroundColor: (entry.confluenceColor || '#9e9e9e') + '15',
+                                    border: `1px solid ${entry.confluenceColor}30`
+                                }}
+                            >
+                                {entry.confluenceScore}% - {entry.confluenceStatus}
+                            </span>
+                        </div>
+
+                        {entry.confluenceDetails && entry.confluenceDetails.length > 0 ? (
+                            <div className="confluence-grid">
+                                {['weekly', 'daily', 'h4', 'lower', 'entry'].map(sectionId => {
+                                    const items = entry.confluenceDetails.filter(item => item.sectionId === sectionId);
+                                    if (items.length === 0) return null;
+
+                                    return (
+                                        <div key={sectionId} className="confluence-section">
+                                            <h4 className="confluence-section-title">
+                                                {items[0].sectionTitle}
+                                            </h4>
+                                            <ul className="confluence-list">
+                                                {items.map((item, idx) => (
+                                                    <li key={idx} className="confluence-list-item">
+                                                        <span className="check-icon">✓</span>
+                                                        <span className="item-text">{item.label}</span>
+                                                        <span className="item-percent">+{item.value}%</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        ) : (
+                            <p className="no-details">No detailed breakdown available.</p>
+                        )}
+                    </div>
+                )}
+
                 <div className="detail-notes">
                     <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.5rem' }}>Notes</label>
                     <p>{entry.notes}</p>

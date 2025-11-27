@@ -5,7 +5,7 @@ import { TRADE_TYPES, COMMON_PAIRS, MOODS } from '../../types';
 import { calculatePnL, calculateSession } from '../../utils/calculations';
 import './Journal.css';
 
-const JournalEntryForm = ({ onAddEntry, onUpdateEntry, initialData, onCancel , fromChecklist}) => {
+const JournalEntryForm = ({ onAddEntry, onUpdateEntry, initialData, onCancel, fromChecklist }) => {
     const [formData, setFormData] = useState({
         pair: '',
         type: 'Buy',
@@ -79,6 +79,7 @@ const JournalEntryForm = ({ onAddEntry, onUpdateEntry, initialData, onCancel , f
             confluenceScore: initialData?.confluenceScore ?? 'NA',
             confluenceStatus: initialData?.confluenceStatus,
             confluenceColor: initialData?.confluenceColor,
+            confluenceDetails: initialData?.confluenceDetails, // Preserve details
         };
 
         if (fromChecklist) {

@@ -115,6 +115,15 @@
     text-align: right;
 }
 
+.checklist-item.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.section-score.max-reached {
+    color: var(--error-color);
+}
+
 /* Toggle Switch */
 .toggle-switch {
     position: relative;
