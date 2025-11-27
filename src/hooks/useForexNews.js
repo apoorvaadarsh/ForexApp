@@ -3,7 +3,7 @@ import { DUMMY_NEWS } from '../data/dummyNews';
 
 const CACHE_KEY = 'forex_news_cache';
 const CACHE_DURATION = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
-const API_URL = 'https://nfs.faireconomy.media/ff_calendar_thisweek.json';
+const API_URL = '/api/calendar';
 
 export const useForexNews = () => {
     const [newsData, setNewsData] = useState({ past: [], upcoming: [] });
@@ -31,6 +31,7 @@ export const useForexNews = () => {
 
                 // Fetch from API
                 const response = await fetch(API_URL);
+                console.log("API response:", response);
                 if (!response.ok) {
                     throw new Error('Failed to fetch news data');
                 }

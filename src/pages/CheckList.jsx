@@ -1,12 +1,22 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { CheckCircle, Edit2, Trash2 } from 'lucide-react';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 import { CHECKLIST_SECTIONS, CONFLUENCE_STATUS } from '../types';
 import './CheckList.css';
 
 const CheckList = () => {
     const navigate = useNavigate();
+    const [entries, setEntries] = useLocalStorage('journal_entries', []);
+    
     // State for checklist toggles: { [itemId]: boolean }
     const [toggles, setToggles] = useState({});
+    const [editingPlanId, setEditingPlanId] = useState(null);
+
+    // Filter for Planned Trades
+    const plannedTrades = useMemo(() => {
+        return entries.filter(entry => entry.tradeStatus === 'Planned');
+    }, [entries]);
 
     // Calculate scores
     const scores = useMemo(() => {
@@ -42,18 +52,58 @@ const CheckList = () => {
     };
 
     const handleSaveTrade = () => {
-        // Capture data
         const confluenceData = {
             confluenceScore: scores.total,
             confluenceStatus: status.label,
-            confluenceColor: status.color
+            confluenceColor: status.color,
+            checklistState: toggles // Save the specific toggles so we can edit later
         };
 
-        // Reset checklist
-        setToggles({});
+        if (editingPlanId) {
+            // Case 1: Updating an existing Plan
+            const updatedEntries = entries.map(entry => {
+                if (entry.id === editingPlanId) {
+                    return { ...entry, ...confluenceData };
+                }
+                return entry;
+            });
+            setEntries(updatedEntries);
+            setEditingPlanId(null);
+            setToggles({});
+        } else {
+            // Case 2: Creating a new Trade (redirect to Journal form)
+            navigate('/', { 
+                state: { 
+                    newEntryFromChecklist: true, 
+                    confluenceData 
+                } 
+            });
+        }
+    };
 
-        // Redirect to Journal with data
-        navigate('/journal', { state: { newEntryFromChecklist: true, confluenceData } });
+    const handleEditPlan = (plan) => {
+        setEditingPlanId(plan.id);
+        // Restore the toggles from the saved plan, or default to empty
+        setToggles(plan.checklistState || {});
+    };
+
+    const handleDeletePlan = (id) => {
+        if (window.confirm('Delete this planned trade?')) {
+            setEntries(entries.filter(e => e.id !== id));
+            if (editingPlanId === id) {
+                setEditingPlanId(null);
+                setToggles({});
+            }
+        }
+    };
+
+    const handleMarkAsTaken = (plan) => {
+        // Update status to 'Taken' and redirect to journal to fill in execution details
+        const updatedEntries = entries.map(entry => 
+            entry.id === plan.id ? { ...entry, tradeStatus: 'Taken' } : entry
+        );
+        setEntries(updatedEntries);
+        navigate('/journal');
     };
 
     return (
@@ -124,6 +174,19 @@ const CheckList = () => {
                         <button className="save-trade-btn" onClick={handleSaveTrade}>
                             {editingPlanId ? 'Update Plan' : 'Save Trade'}
                         </button>
+                        
+                        {editingPlanId && (
+                            <button 
+                                className="cancel-edit-btn"
+                                style={{ marginTop: '10px', width: '100%', padding: '8px', background: 'transparent', border: '1px solid #444', color: '#888', borderRadius: '6px', cursor: 'pointer' }}
+                                onClick={() => {
+                                    setEditingPlanId(null);
+                                    setToggles({});
+                                }}
+                            >
+                                Cancel Edit
+                            </button>
+                        )}
                     </div>
 
                     {/* Planned Trades List */}
@@ -132,14 +195,14 @@ const CheckList = () => {
                         {plannedTrades.length > 0 ? (
                             <div className="planned-list">
                                 {plannedTrades.map(plan => (
-                                    <div key={plan.id} className="planned-card" style={{ borderLeftColor: plan.confluenceColor }}>
+                                    <div key={plan.id} className="planned-card" style={{ borderLeft: `4px solid ${plan.confluenceColor}` }}>
                                         <div className="planned-info">
-                                            <span className="planned-pair">{plan.pair}</span>
+                                            <span className="planned-pair">{plan.pair || 'Unknown Pair'}</span>
                                             <div className="planned-meta">
                                                 <span style={{ color: plan.confluenceColor, fontWeight: 600 }}>
                                                     {plan.confluenceScore}%
                                                 </span>
-                                                <span>•</span>
+                                                <span className="meta-dot">•</span>
                                                 <span>{plan.confluenceStatus}</span>
                                             </div>
                                         </div>

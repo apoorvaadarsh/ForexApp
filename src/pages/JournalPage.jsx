@@ -13,7 +13,7 @@ const JournalPage = () => {
     const [selectedEntry, setSelectedEntry] = useState(null);
     const [editingEntry, setEditingEntry] = useState(null);
     const [showForm, setShowForm] = useState(false);
-    const [filterStatus, setFilterStatus] = useState('All');
+    const [isFromChecklist, setIsFromChecklist] = useState(false);
     const [filters, setFilters] = useState({
         sortBy: 'dateDesc',
         pair: '',
@@ -29,6 +29,7 @@ const JournalPage = () => {
 
     useEffect(() => {
         if (location.state?.newEntryFromChecklist) {
+            setIsFromChecklist(true);
             const { confluenceData } = location.state;
             setEditingEntry({
                 ...confluenceData,
@@ -43,6 +44,7 @@ const JournalPage = () => {
     const handleAddEntry = (newEntry) => {
         // 1. Add the new entry to the front of the list
         setEntries([newEntry, ...entries]); 
+        setIsFromChecklist(false);
         // 2. Close the form
         setShowForm(false); 
     };
@@ -52,6 +54,7 @@ const JournalPage = () => {
             entry.id === updatedEntry.id ? updatedEntry : entry
         ));
         setEditingEntry(null);
+        setIsFromChecklist(false);
         setShowForm(false);
     };
 
@@ -72,6 +75,7 @@ const JournalPage = () => {
     const handleCancelForm = () => {
         setShowForm(false);
         setEditingEntry(null);
+        setIsFromChecklist(false);
     };
 
     const handleFilterChange = (name, value) => {
@@ -147,6 +151,7 @@ const JournalPage = () => {
                             onUpdateEntry={handleUpdateEntry}
                             initialData={editingEntry} // Correctly null for new entry
                             onCancel={handleCancelForm}
+                            fromChecklist={isFromChecklist}   
                         />
                     </div>
                 </div>
