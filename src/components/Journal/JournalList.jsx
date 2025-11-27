@@ -1,7 +1,17 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { calculatePnL } from '../../utils/calculations';
+import { CONFLUENCE_STATUS } from '../../types';
 import './Journal.css';
+
+const getConfluenceDetails = (score) => {
+    if (score === undefined || score === 'NA') return null;
+    const numericScore = parseInt(score, 10);
+    if (isNaN(numericScore)) return null;
+
+    const status = CONFLUENCE_STATUS.find(s => numericScore >= s.min && numericScore <= s.max);
+    return status ? { label: status.label, color: status.color } : null;
+};
 
 const JournalList = ({ entries, onEntryClick }) => {
     if (entries.length === 0) {
@@ -58,19 +68,26 @@ const JournalList = ({ entries, onEntryClick }) => {
                         </div>
 
                         {/* 3. Confluence Row */}
-                        {entry.confluenceScore !== undefined && entry.confluenceScore !== 'NA' && (
-                            <div className="card-confluence-row">
-                                <span
-                                    className="confluence-badge"
-                                    style={{
-                                        color: entry.confluenceColor || 'var(--text-secondary)',
-                                        backgroundColor: (entry.confluenceColor || '#9e9e9e') + '15',
-                                    }}
-                                >
-                                    {entry.confluenceScore}% - {entry.confluenceStatus}
-                                </span>
-                            </div>
-                        )}
+                        {(() => {
+                            const confluence = getConfluenceDetails(entry.confluenceScore);
+                            if (confluence) {
+                                return (
+                                    <div className="card-confluence-row">
+                                        <span
+                                            className="confluence-badge"
+                                            style={{
+                                                color: confluence.color,
+                                                backgroundColor: confluence.color + '15', // 15 is hex opacity ~8%
+                                                border: `1px solid ${confluence.color}30` // 30 is hex opacity ~19%
+                                            }}
+                                        >
+                                            {entry.confluenceScore}% - {confluence.label}
+                                        </span>
+                                    </div>
+                                );
+                            }
+                            return null;
+                        })()}
 
                         {/* 4. Footer: Tags */}
                         {entry.tags && entry.tags.length > 0 && (

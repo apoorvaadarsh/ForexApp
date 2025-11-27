@@ -90,7 +90,7 @@ export const CONFLUENCE_STATUS = [
     { min: 80, max: 89, label: 'Good', color: '#4caf50' }, // Green
     { min: 90, max: 100, label: 'Strong', color: '#2e7d32' }, // Darker Green
     { min: 100, max: 110, label: 'Very Strong', color: '#1b5e20' }, // Even Darker Green
-    { min: 120, max: 135, label: 'Excellent', color: '#1b5e20' },
-    { min: 135, max: 149, label: 'Outstanding', color: '#1b5e20' },
-    { min: 150, max: 999, label: 'Perfect Trade', color: 'var(--primary-color)' },
+    { min: 110, max: 120, label: 'Excellent', color: '#1b5e20' },
+    { min: 120, max: 135, label: 'Outstanding', color: '#1b5e20' },
+    { min: 135, max: 200, label: 'Perfect Trade', color: 'var(--primary-color)' },
 ];
